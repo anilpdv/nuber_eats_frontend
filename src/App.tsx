@@ -1,24 +1,13 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useReactiveVar } from "@apollo/client";
+import { isLoggedInVar } from "./apollo";
+import LoggedInRouter from "./routers/login-in-router";
+import LoggedOutRouter from "./routers/login-out-router";
 
 function App() {
+  const isLoggedIn = useReactiveVar(isLoggedInVar);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="flex">
+      {isLoggedIn ? <LoggedInRouter /> : <LoggedOutRouter />}
     </div>
   );
 }
