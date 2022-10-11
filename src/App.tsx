@@ -6,7 +6,7 @@ import LoggedOutRouter from "./routers/login-out-router";
 function App() {
   const isLoggedIn = useReactiveVar(isLoggedInVar);
   return (
-    <div className="flex">
+    <div className="">
       {isLoggedIn ? <LoggedInRouter /> : <LoggedOutRouter />}
     </div>
   );

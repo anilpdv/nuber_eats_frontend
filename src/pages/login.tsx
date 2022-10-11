@@ -1,9 +1,9 @@
 import { gql, useMutation } from "@apollo/client";
 import { useForm } from "react-hook-form";
-import { FormError } from "../components/utils/common/form-error";
+import { FormError } from "../components/common/form-error";
 import { LoginMutation, LoginMutationVariables } from "../__generated__/global";
 import logo from "../images/logo.svg";
-import Button from "../components/utils/common/button";
+import Button from "../components/common/button";
 import { Link } from "react-router-dom";
 import { authToken, isLoggedInVar } from "../apollo";
 import { LOCALSTORAGE_TOKEN } from "../constants";

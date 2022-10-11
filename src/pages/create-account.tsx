@@ -1,13 +1,13 @@
 import { gql, useMutation } from "@apollo/client";
 import { useForm } from "react-hook-form";
-import { FormError } from "../components/utils/common/form-error";
+import { FormError } from "../components/common/form-error";
 import {
   CreateAccountMutation,
   CreateAccountMutationVariables,
   UserRole,
 } from "../__generated__/global";
 import logo from "../images/logo.svg";
-import Button from "../components/utils/common/button";
+import Button from "../components/common/button";
 import { Link, useNavigate } from "react-router-dom";
 
 const CREATE_ACCOUNT_MUTATION = gql`
