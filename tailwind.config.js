@@ -8,5 +8,5 @@ module.exports = {
       lime: colors.lime,
     },
   },
-  plugins: [],
+  plugins: [require("daisyui")],
 };

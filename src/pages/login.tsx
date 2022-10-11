@@ -5,6 +5,8 @@ import { LoginMutation, LoginMutationVariables } from "../__generated__/global";
 import logo from "../images/logo.svg";
 import Button from "../components/utils/common/button";
 import { Link } from "react-router-dom";
+import { authToken, isLoggedInVar } from "../apollo";
+import { LOCALSTORAGE_TOKEN } from "../constants";
 
 const LOGIN_MUTATION = gql`
   mutation Login($loginInput: LoginInput!) {
@@ -31,10 +33,12 @@ export default function Login() {
 
   const onCompleted = (data: LoginMutation) => {
     const {
-      login: { error, ok, token },
+      login: { ok, token },
     } = data;
     if (ok) {
-      console.log({ token });
+      localStorage.setItem(LOCALSTORAGE_TOKEN, token || "");
+      authToken(token);
+      isLoggedInVar(true);
     }
   };
 
@@ -65,7 +69,11 @@ export default function Login() {
         >
           <div className="flex flex-col">
             <input
-              {...register("email", { required: "email is required" })}
+              {...register("email", {
+                required: "email is required",
+                pattern:
+                  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+              })}
               placeholder="Email"
               name="email"
               type={"email"}
@@ -73,6 +81,9 @@ export default function Login() {
             />
             {errors.email?.message && (
               <FormError errorMessage={errors.email?.message} />
+            )}
+            {errors.email?.type === "pattern" && (
+              <FormError errorMessage={"Please enter a valid email."} />
             )}
           </div>
           <div className="flex flex-col">
@@ -100,7 +111,7 @@ export default function Login() {
           {data?.login.error && <FormError errorMessage={data.login.error} />}
         </form>
         <div className="m-6">
-          <span>New to uber?</span>
+          <span>New to uber? </span>
           <Link to="create-account" className="text-green-500 hover:underline">
             Create an Account
           </Link>

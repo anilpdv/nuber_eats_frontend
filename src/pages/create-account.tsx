@@ -8,7 +8,7 @@ import {
 } from "../__generated__/global";
 import logo from "../images/logo.svg";
 import Button from "../components/utils/common/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const CREATE_ACCOUNT_MUTATION = gql`
   mutation createAccount($createAccountInput: CreateAccountInput!) {
@@ -32,13 +32,13 @@ export default function CreateAccount() {
     formState: { errors, isValid },
     handleSubmit,
   } = useForm<ICreateAccountForm>({ mode: "onChange" });
-
+  const navigate = useNavigate();
   const onCompleted = (data: CreateAccountMutation) => {
     const {
       createAccount: { error, ok },
     } = data;
     if (ok) {
-      console.log({ ok });
+      navigate("/");
     }
   };
 
@@ -48,10 +48,10 @@ export default function CreateAccount() {
   >(CREATE_ACCOUNT_MUTATION, { onCompleted });
 
   const onSubmit = () => {
-    const { email, password } = getValues();
+    const { email, password, role } = getValues();
     createAccountMutation({
       variables: {
-        createAccountInput: { email, password, role: UserRole.Client },
+        createAccountInput: { email, password, role },
       },
     });
   };
@@ -66,7 +66,11 @@ export default function CreateAccount() {
         >
           <div className="flex flex-col">
             <input
-              {...register("email", { required: "email is required" })}
+              {...register("email", {
+                required: "email is required",
+                pattern:
+                  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+              })}
               placeholder="Email"
               name="email"
               type={"email"}
@@ -74,6 +78,9 @@ export default function CreateAccount() {
             />
             {errors.email?.message && (
               <FormError errorMessage={errors.email?.message} />
+            )}
+            {errors.email?.type === "pattern" && (
+              <FormError errorMessage={"Please enter a valid email."} />
             )}
           </div>
           <div className="flex flex-col">
@@ -97,15 +104,28 @@ export default function CreateAccount() {
               </span>
             )}
           </div>
-          <Button loading={loading} isValid={isValid} actionText="Login" />
+          <select
+            {...register("role", { required: true })}
+            name="role"
+            className="border border-gray-200 p-2"
+          >
+            {Object.keys(UserRole).map((role, index) => (
+              <option key={index}>{role}</option>
+            ))}
+          </select>
+          <Button
+            loading={loading}
+            isValid={isValid}
+            actionText="Create Account"
+          />
           {data?.createAccount.error && (
             <FormError errorMessage={data.createAccount.error} />
           )}
         </form>
         <div className="m-6">
-          <span>New to uber?</span>
-          <Link to="create-account" className="text-green-500 hover:underline">
-            Create an Account
+          <span>Already have an account? </span>
+          <Link to="/" className="text-green-500 hover:underline">
+            Login
           </Link>
         </div>
       </div>

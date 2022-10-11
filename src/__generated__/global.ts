@@ -582,6 +582,11 @@ export type LoginMutationVariables = Exact<{
 
 export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginOutput', ok: boolean, token?: string | null, error?: string | null } };
 
+export type MeQueryQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MeQueryQuery = { __typename?: 'Query', me: { __typename?: 'User', id: number, email: string, role: UserRole, verified: boolean } };
+
 
 export const CreateAccountDocument = gql`
     mutation createAccount($createAccountInput: CreateAccountInput!) {
@@ -652,3 +657,43 @@ export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginM
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const MeQueryDocument = gql`
+    query meQuery {
+  me {
+    id
+    email
+    role
+    verified
+  }
+}
+    `;
+
+/**
+ * __useMeQueryQuery__
+ *
+ * To run a query within a React component, call `useMeQueryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMeQueryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMeQueryQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useMeQueryQuery(baseOptions?: Apollo.QueryHookOptions<MeQueryQuery, MeQueryQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MeQueryQuery, MeQueryQueryVariables>(MeQueryDocument, options);
+      }
+export function useMeQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQueryQuery, MeQueryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MeQueryQuery, MeQueryQueryVariables>(MeQueryDocument, options);
+        }
+export type MeQueryQueryHookResult = ReturnType<typeof useMeQueryQuery>;
+export type MeQueryLazyQueryHookResult = ReturnType<typeof useMeQueryLazyQuery>;
+export type MeQueryQueryResult = Apollo.QueryResult<MeQueryQuery, MeQueryQueryVariables>;
+export function refetchMeQueryQuery(variables?: MeQueryQueryVariables) {
+      return { query: MeQueryDocument, variables: variables }
+    }
